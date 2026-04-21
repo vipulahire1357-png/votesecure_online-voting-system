@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Online Voting System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="navbar">
+  <a href="{{ url_for('index') }}" class="navbar-brand">
+    <span class="brand-icon">🗳️</span>
+    <span class="brand-name">VoteSecure</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+    <li><a href="{{ url_for('elections') }}">Elections</a></li>
+    <li><a href="{{ url_for('voters') }}">Voters</a></li>
+    <li><a href="{{ url_for('candidates') }}">Candidates</a></li>
+    <li><a href="{{ url_for('audit') }}">Audit Log</a></li>
+  </ul>
+</nav>
+
+<!-- ── Main ── -->
+<main>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {% if category == 'success' %}✅{% elif category == 'error' %}❌{% else %}ℹ️{% endif %}
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <span>VoteSecure</span> — Online Voting System &nbsp;|&nbsp; Author: <span>Vipul Ahire</span>
+</footer>
+
+<script>
+  /* Highlight active nav link */
+  const links = document.querySelectorAll('.nav-links a');
+  links.forEach(link => {
+    if (link.href === window.location.href) link.classList.add('active');
+  });
+
+  /* Candidate card radio-select highlight */
+  document.querySelectorAll('.candidate-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      card.querySelector('input[type="radio"]').checked = true;
+    });
+  });
+</script>
+
+</body>
+</html>

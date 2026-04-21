@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Elections — VoteSecure{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><span class="icon">🏛️</span> Elections</h1>
+  <a href="{{ url_for('add_election') }}" class="btn btn-primary">➕ New Election</a>
+</div>
+
+{% if elections %}
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Election Name</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Update Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in elections %}
+          <tr>
+            <td>{{ e.id }}</td>
+            <td><strong>{{ e.name }}</strong></td>
+            <td>{{ e.date }}</td>
+            <td><span class="badge badge-{{ e.status }}">{{ e.status }}</span></td>
+            <td>
+              <form method="POST" action="{{ url_for('update_election_status', election_id=e.id) }}" style="display:flex;gap:.4rem;align-items:center;">
+                <select name="status" style="padding:.3rem .5rem;font-size:.82rem;border:1px solid var(--grey-300);border-radius:4px;">
+                  <option value="upcoming"  {% if e.status=='upcoming'  %}selected{% endif %}>Upcoming</option>
+                  <option value="active"    {% if e.status=='active'    %}selected{% endif %}>Active</option>
+                  <option value="completed" {% if e.status=='completed' %}selected{% endif %}>Completed</option>
+                </select>
+                <button type="submit" class="btn btn-outline btn-sm">Update</button>
+              </form>
+            </td>
+            <td>
+              <div class="flex gap-1 flex-wrap">
+                {% if e.status == 'active' %}
+                  <a href="{{ url_for('vote', election_id=e.id) }}" class="btn btn-gold btn-sm">🗳️ Vote</a>
+                {% endif %}
+                {% if e.status == 'completed' %}
+                  <a href="{{ url_for('results', election_id=e.id) }}" class="btn btn-primary btn-sm">📊 Results</a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">🏛️</div>
+  <p>No elections have been created yet.</p>
+  <a href="{{ url_for('add_election') }}" class="btn btn-primary">Create First Election</a>
+</div>
+{% endif %}
+
+{% endblock %}

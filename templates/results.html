@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Results — {{ election.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><span class="icon">📊</span> Election Results</h1>
+  <a href="{{ url_for('elections') }}" class="btn btn-outline">← Back to Elections</a>
+</div>
+
+<!-- Election Header -->
+<div style="text-align:center;margin-bottom:1.5rem;">
+  <h2>{{ election.name }}</h2>
+  <p style="color:var(--grey-500);">📅 {{ election.date }} &nbsp;|&nbsp; Total Votes Cast: <strong>{{ total_votes }}</strong></p>
+</div>
+
+<!-- Winner Banner -->
+{% if winner and total_votes > 0 %}
+<div class="winner-banner">
+  <div class="trophy">🏆</div>
+  <h2>{{ winner.name }}</h2>
+  <p>
+    {% if winner.party %}{{ winner.party }}{% else %}Independent{% endif %}
+    &nbsp;—&nbsp; Winner with <strong>{{ winner.vote_count }}</strong> vote{{ 's' if winner.vote_count != 1 }}
+  </p>
+</div>
+{% elif total_votes == 0 %}
+<div style="background:#fff3cd;padding:1rem 1.3rem;border-radius:var(--radius);margin-bottom:1.5rem;text-align:center;">
+  ⚠️ No votes were cast in this election.
+</div>
+{% endif %}
+
+<!-- Vote Tally -->
+{% if tally %}
+<div class="card">
+  <div class="card-header">📋 Vote Tally</div>
+  <div class="card-body">
+    {% for candidate in tally %}
+    <div class="result-bar-wrap">
+      <div class="result-bar-label">
+        <span>
+          {% if loop.first and total_votes > 0 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}•{% endif %}
+          <strong>{{ candidate.name }}</strong>
+          {% if candidate.party %}<span style="color:var(--grey-500);font-size:.82rem;">({{ candidate.party }})</span>{% endif %}
+        </span>
+        <span>{{ candidate.vote_count }} vote{{ 's' if candidate.vote_count != 1 }}
+          {% if total_votes > 0 %}
+            <span style="color:var(--grey-500);font-size:.8rem;">
+              ({{ "%.1f"|format(candidate.vote_count / total_votes * 100) }}%)
+            </span>
+          {% endif %}
+        </span>
+      </div>
+      <div class="result-bar-track">
+        <div class="result-bar-fill"
+             style="width: {{ (candidate.vote_count / total_votes * 100) if total_votes > 0 else 0 }}%">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Full Table -->
+<div class="card mt-3">
+  <div class="card-header">📄 Detailed Results</div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Candidate</th>
+            <th>Party</th>
+            <th>Votes</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in tally %}
+          <tr {% if loop.first and total_votes > 0 %}style="background:#fffbf0;"{% endif %}>
+            <td><strong>#{{ loop.index }}</strong></td>
+            <td>{{ c.name }} {% if loop.first and total_votes > 0 %}🏆{% endif %}</td>
+            <td>{{ c.party if c.party else '—' }}</td>
+            <td><strong>{{ c.vote_count }}</strong></td>
+            <td>
+              {% if total_votes > 0 %}
+                {{ "%.1f"|format(c.vote_count / total_votes * 100) }}%
+              {% else %}
+                0%
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

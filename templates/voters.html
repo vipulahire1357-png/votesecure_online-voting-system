@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Voters — VoteSecure{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><span class="icon">👤</span> Registered Voters</h1>
+  <a href="{{ url_for('add_voter') }}" class="btn btn-primary">📝 Register Voter</a>
+</div>
+
+{% if voters %}
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in voters %}
+          <tr>
+            <td>{{ v.id }}</td>
+            <td><strong>{{ v.name }}</strong></td>
+            <td>{{ v.email }}</td>
+            <td>{{ v.phone }}</td>
+            <td>
+              {% if v.is_verified %}
+                <span class="badge badge-verified">✅ Verified</span>
+              {% else %}
+                <span class="badge badge-pending">⏳ Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if not v.is_verified %}
+                <form method="POST" action="{{ url_for('verify_voter', voter_id=v.id) }}">
+                  <button type="submit" class="btn btn-success btn-sm">✔ Verify</button>
+                </form>
+              {% else %}
+                <span style="color:var(--grey-500);font-size:.82rem;">Verified</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">👤</div>
+  <p>No voters registered yet.</p>
+  <a href="{{ url_for('add_voter') }}" class="btn btn-primary">Register First Voter</a>
+</div>
+{% endif %}
+
+{% endblock %}

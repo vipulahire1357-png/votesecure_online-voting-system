@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Audit Log — VoteSecure{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><span class="icon">📜</span> Audit Trail</h1>
+  <span style="color:var(--grey-500);font-size:.875rem;">{{ logs|length }} total entries</span>
+</div>
+
+<div style="background:#fff3cd;padding:.8rem 1.2rem;border-radius:var(--radius);margin-bottom:1.5rem;font-size:.875rem;">
+  🔒 The audit log is <strong>append-only</strong> and records every significant action in the system for transparency and accountability.
+</div>
+
+{% if logs %}
+<div class="audit-list">
+  {% for log in logs %}
+  <div class="audit-item">
+    <div class="audit-action">
+      <span style="margin-right:.4rem;">
+        {% if 'Vote cast' in log.action %}🗳️
+        {% elif 'Voter registered' in log.action %}📝
+        {% elif 'Voter verified' in log.action %}✅
+        {% elif 'Election created' in log.action %}🏛️
+        {% elif 'status changed' in log.action %}🔄
+        {% elif 'Candidate added' in log.action %}🧑‍💼
+        {% else %}📌{% endif %}
+      </span>
+      {{ log.action }}
+    </div>
+    <div class="audit-time">{{ log.timestamp }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">📜</div>
+  <p>No audit entries yet. Actions like voter registration and vote casting will appear here.</p>
+</div>
+{% endif %}
+
+{% endblock %}

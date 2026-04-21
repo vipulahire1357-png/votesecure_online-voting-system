@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Register Voter — VoteSecure{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><span class="icon">📝</span> Register Voter</h1>
+  <a href="{{ url_for('voters') }}" class="btn btn-outline">← Back to Voters</a>
+</div>
+
+<div class="form-card">
+  <div class="form-header">👤 Voter Registration</div>
+  <form method="POST">
+    <div class="form-group">
+      <label for="name">Full Name *</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Vipul Ahire" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Email Address *</label>
+      <input type="email" id="email" name="email" placeholder="voter@example.com" required />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone Number *</label>
+      <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" required />
+    </div>
+    <p style="font-size:.82rem;color:var(--grey-500);margin-bottom:1rem;">
+      ⚠️ After registration, the voter must be verified by an administrator before voting.
+    </p>
+    <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Register Voter</button>
+  </form>
+</div>
+{% endblock %}

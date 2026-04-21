@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Home — VoteSecure{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="hero">
+  <h1>🗳️ VoteSecure</h1>
+  <p>A secure, transparent online voting platform. Manage elections, register voters, add candidates, cast votes, and view auditable results — all in one place.</p>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">🏛️</div>
+    <div class="stat-number">{{ stats.elections }}</div>
+    <div class="stat-label">Elections</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">👤</div>
+    <div class="stat-number">{{ stats.voters }}</div>
+    <div class="stat-label">Registered Voters</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🧑‍💼</div>
+    <div class="stat-number">{{ stats.candidates }}</div>
+    <div class="stat-label">Candidates</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-number">{{ stats.votes }}</div>
+    <div class="stat-label">Votes Cast</div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<h2 style="margin-bottom:1rem;">Quick Actions</h2>
+<div class="quick-actions">
+  <a href="{{ url_for('add_election') }}" class="action-btn">
+    <span class="icon">➕</span>
+    <span class="label">New Election</span>
+  </a>
+  <a href="{{ url_for('add_voter') }}" class="action-btn">
+    <span class="icon">📝</span>
+    <span class="label">Register Voter</span>
+  </a>
+  <a href="{{ url_for('add_candidate') }}" class="action-btn">
+    <span class="icon">🧑‍💼</span>
+    <span class="label">Add Candidate</span>
+  </a>
+  <a href="{{ url_for('elections') }}" class="action-btn">
+    <span class="icon">🗳️</span>
+    <span class="label">Cast a Vote</span>
+  </a>
+  <a href="{{ url_for('audit') }}" class="action-btn">
+    <span class="icon">📜</span>
+    <span class="label">Audit Log</span>
+  </a>
+</div>
+
+<!-- Recent Elections -->
+<div class="card">
+  <div class="card-header">📅 Recent Elections</div>
+  <div class="card-body">
+    {% if recent_elections %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Election Name</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in recent_elections %}
+            <tr>
+              <td>{{ e.id }}</td>
+              <td><strong>{{ e.name }}</strong></td>
+              <td>{{ e.date }}</td>
+              <td>
+                <span class="badge badge-{{ e.status }}">{{ e.status }}</span>
+              </td>
+              <td>
+                {% if e.status == 'active' %}
+                  <a href="{{ url_for('vote', election_id=e.id) }}" class="btn btn-gold btn-sm">Vote Now</a>
+                {% elif e.status == 'completed' %}
+                  <a href="{{ url_for('results', election_id=e.id) }}" class="btn btn-primary btn-sm">Results</a>
+                {% else %}
+                  <span style="color:var(--grey-500);font-size:.82rem;">Not yet active</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🏛️</div>
+        <p>No elections yet. Create the first one!</p>
+        <a href="{{ url_for('add_election') }}" class="btn btn-primary">Create Election</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
