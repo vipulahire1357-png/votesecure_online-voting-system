@@ -175,4 +175,4 @@ online_voting_system/
 
 ---
 
-*Built with ❤️ by Vipul Ahire*
+*Author: Vipul Ahire*
